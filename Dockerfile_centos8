@@ -1,0 +1,16 @@
+# Attempt to reproduce Grigory Sharov's test environement ("I'm running gcc version 9.3.0, Linux 5.6.11-arch1-1."")
+FROM centos:8
+
+#we suggest to either execute RUN pacman -Syu immediately after your FROM statement or as soon as you docker run into a container
+RUN yum -y install sudo epel-release && sed --in-place 's/^#\s*\(%wheel\s\+ALL=(ALL)\s\+NOPASSWD:\s\+ALL\)/\1/' /etc/sudoers 
+
+# Setup the user
+RUN useradd -s /bin/bash -m developer && echo "developer:developer" | chpasswd && usermod -aG wheel developer
+
+# cisTEM deps
+RUN yum -y install fftw fftw-devel wxGTK3 wxGTK3-devel libtiff libtiff-devel cmake make gcc git which diffutils gcc-c++ libjpeg-turbo-devel
+
+# Ready to roll
+USER developer
+ENV HOME /home/developer
+WORKDIR /home/developer

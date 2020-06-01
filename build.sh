@@ -1,1 +1,1 @@
-docker build --rm -t cistem_test_env .
+docker build -t cistem_test_env .

@@ -1,0 +1,18 @@
+# Attempt to reproduce Grigory Sharov's test environement ("I'm running gcc version 9.3.0, Linux 5.6.11-arch1-1."")
+FROM archlinux:20200505
+
+#we suggest to either execute RUN pacman -Syu immediately after your FROM statement or as soon as you docker run into a container
+RUN pacman -Syu --noconfirm && pacman -S --noconfirm sudo && sed --in-place 's/^#\s*\(%wheel\s\+ALL=(ALL)\s\+NOPASSWD:\s\+ALL\)/\1/' /etc/sudoers
+
+# Setup the user
+RUN useradd -s /bin/bash -m developer && echo "developer:developer" | chpasswd && usermod -aG wheel developer
+
+# cisTEM deps
+RUN pacman -S --noconfirm sudo fftw wxgtk libtiff
+
+RUN pacman -S --noconfirm cmake make gcc git cmp diff
+
+# Ready to roll
+USER developer
+ENV HOME /home/developer
+WORKDIR /home/developer
